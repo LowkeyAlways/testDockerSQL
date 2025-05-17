@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mysql-db:
+    image: mysql:8
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: andy
+      MYSQL_PASSWORD: andy123
+      MYSQL_DATABASE: iticParisApi
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  spring-app:
+    image: testdockersql-0.0.1-snapshot
+    build: .
+    container_name: spring-api
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/iticParisApi?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: andy
+      SPRING_DATASOURCE_PASSWORD: andy123
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+    entrypoint: ["/wait-for-it.sh", "mysql-db:3306", "--", "java", "-jar", "app.jar"]
+
+networks:
+  backend:
