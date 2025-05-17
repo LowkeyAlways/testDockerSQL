@@ -1,6 +1,5 @@
 package com.example.demo.dtos;
 
-import com.example.demo.models.User;
 
 import lombok.Data;
 

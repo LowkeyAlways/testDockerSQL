@@ -8,7 +8,7 @@ class TestDockerSqlApplicationTests {
 
 	@Test
 	void contextLoads() {
-		System.out.println("contextLoads");
+		System.out.println("contextLoads"); 
 	}
 
 }
